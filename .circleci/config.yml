@@ -3,22 +3,26 @@
 version: 2.1
 
 jobs:
-  say-hello:
+  save-hello-to-storage:
     docker:
       - image: cimg/base:stable
     steps:
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
-
-  say-hello-from-node:
+          name: "Save hello"
+          command: "echo Hello, World! > ~/test.txt"
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - test.txt
+  get-hello-from-storage:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - run:  "echo << pipeline.id >>"
-      - run:
-          name: "AhmedIhab"
-          command: "echo Hello $SAY_MY_NAME Form Node"
+      - attach_workspace:
+          at: ~/
+      - run: "cat test.txt"
+
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows

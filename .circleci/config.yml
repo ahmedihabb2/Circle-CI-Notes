@@ -21,7 +21,7 @@ jobs:
       - run:  "echo << pipeline.id >>"
       - attach_workspace:
           at: ~/
-      - run: "cat test.txt"
+      - run: "cat ~/test.txt"
 
 
 # Invoke jobs via workflows

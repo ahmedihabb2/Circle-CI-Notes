@@ -29,4 +29,7 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - say-hello-from-node
+      - save-hello-to-storage
+      - get-hello-from-storage:
+          requires:
+            - save-hello-to-storage

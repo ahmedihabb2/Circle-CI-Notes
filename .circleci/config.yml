@@ -33,6 +33,14 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: "cat ~/test.txt"
+  handle-failures:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run:  "eeecho hello, Manga"
+      - run:
+          command: "echo error occured"
+          when: on_fail
 
 
 # Invoke jobs via workflows
@@ -42,6 +50,7 @@ workflows:
     jobs:
       - pipeline-info
       - save-hello-to-storage
+      - handle-failures
       - get-hello-from-storage:
           requires:
             - save-hello-to-storage

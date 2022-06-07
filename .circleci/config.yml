@@ -1,56 +1,20 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
-commands:
-  pipeline-id:
-    description: "Very simple command to print pipeline ID"
-    steps:
-      - run: "echo Pipeline ID $CIRCLE_WORKFLOW_ID"
-
+# Use a package of configuration called an orb.
 
 jobs:
-  pipeline-info:
+  create_infrastructure: 
     docker:
-      - image: cimg/base:stable
+      - image: amazon/aws-cli
     steps:
-      - pipeline-id
-  save-hello-to-storage:
-    docker:
-      - image: cimg/base:stable
-    steps:
+      - checkout
       - run:
-          name: "Save hello"
-          command: "echo Hello, World! > ~/test.txt"
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - test.txt
-  get-hello-from-storage:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: "cat ~/test.txt"
-  handle-failures:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run:  "eeecho hello, Manga"
-      - run:
-          command: "echo error occured"
-          when: on_fail
-
-
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+          name: Create Cloudformation Stack
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
+              --region us-east-1
 workflows:
-  say-hello-workflow:
+ create_infra:
     jobs:
-      - pipeline-info
-      - save-hello-to-storage
-      - handle-failures
-      - get-hello-from-storage:
-          requires:
-            - save-hello-to-storage
+      - create_infrastructure

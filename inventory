@@ -1,4 +1,7 @@
 [all]
 3.83.235.223
 
+[defaults]
+host_key_checking = False
+
 

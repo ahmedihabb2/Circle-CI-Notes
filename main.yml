@@ -1,0 +1,11 @@
+- name: Exercise setting up web server on an EC2
+  hosts: all
+  user: ubuntu
+  become: yes
+  become_method: sudo
+  become_user: root
+  roles:
+   - setup
+
+
+   
